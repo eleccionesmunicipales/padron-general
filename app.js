@@ -1,5 +1,5 @@
 const STORAGE_KEY = "padron-electoral-registros";
-const CSV_URL = "padron-electoral.csv";
+const CSV_URL = "padron-electoral.csv?v=20260916-3";
 const recordsBody = document.querySelector("#recordsBody");
 const emptyState = document.querySelector("#emptyState");
 const search = document.querySelector("#search");
@@ -8,19 +8,21 @@ let records = [];
 
 async function loadRecords() {
   try {
-    const savedRecords = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-    if (savedRecords.length) return repairLoadedRecords(savedRecords);
-  } catch {
-    // Continue with the public CSV if local data is not available.
-  }
-
-  try {
-    const response = await fetch(CSV_URL);
+    const response = await fetch(CSV_URL, { cache: "no-store" });
     if (!response.ok) throw new Error("CSV not available");
     return parseCsvRecords(await response.text());
   } catch {
+    // Continue with local data if the public CSV is not available.
+  }
+
+  try {
+    const savedRecords = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    if (savedRecords.length) return repairLoadedRecords(savedRecords);
+  } catch {
     return [];
   }
+
+  return [];
 }
 
 function repairLoadedRecords(loadedRecords) {
@@ -47,20 +49,22 @@ function normalize(value) {
 }
 
 function parseCsvRecords(csvText) {
-  const rows = parseCsv(csvText).filter((row) => row.some((value) => normalize(value)));
+  const rows = parseCsv(csvText, detectCsvDelimiter(csvText)).filter((row) => row.some((value) => normalize(value)));
   if (rows.length < 2) return [];
 
   const headers = rows[0].map((header) => normalize(header).toLowerCase());
   return rows.slice(1).map((row, index) => {
     const item = Object.fromEntries(headers.map((header, headerIndex) => [header, row[headerIndex] || ""]));
+    const firstNames = item.nombres || item.nombre || "";
+    const lastNames = item.apellidos || item.apellido || "";
     return {
-      id: item.cedula || String(index + 1),
-      firstNames: item.nombres,
-      lastNames: item.apellidos,
-      fullName: `${item.nombres || ""} ${item.apellidos || ""}`.trim(),
-      birthDate: item.fecha_nacimiento,
+      id: item.cedula || item.ci || String(index + 1),
+      firstNames,
+      lastNames,
+      fullName: `${firstNames} ${lastNames}`.trim(),
+      birthDate: item.fecha_nacimiento || item["fec nac"] || item.fecha || item.nacimiento || "",
       sex: normalize(item.sexo).toUpperCase().slice(0, 1),
-      documentNumber: item.cedula,
+      documentNumber: item.cedula || item.ci || "",
       pollingPlace: item.local,
       neighborhood: item.barrio_compania || "",
       tableNumber: item.mesa,
@@ -69,7 +73,12 @@ function parseCsvRecords(csvText) {
   });
 }
 
-function parseCsv(csvText) {
+function detectCsvDelimiter(csvText) {
+  const firstLine = csvText.split(/\r\n|\n|\r/, 1)[0] || "";
+  return (firstLine.match(/;/g) || []).length > (firstLine.match(/,/g) || []).length ? ";" : ",";
+}
+
+function parseCsv(csvText, delimiter) {
   const rows = [];
   let row = [];
   let value = "";
@@ -84,7 +93,7 @@ function parseCsv(csvText) {
       index += 1;
     } else if (char === '"') {
       quoted = !quoted;
-    } else if (char === "," && !quoted) {
+    } else if (char === delimiter && !quoted) {
       row.push(value);
       value = "";
     } else if ((char === "\n" || char === "\r") && !quoted) {
@@ -162,7 +171,6 @@ function getFilteredRecords() {
       record.pollingPlace,
       record.tableNumber,
       record.orderNumber,
-      record.neighborhood,
     ].join(" ").toLowerCase();
     return text.includes(term);
   });
@@ -177,7 +185,6 @@ function renderTable() {
       <td data-label="Apellidos">${escapeHtml(fixNameText(record.lastNames))}</td>
       <td data-label="Cedula">${escapeHtml(record.documentNumber)}</td>
       <td data-label="Local de votacion">${escapeHtml(record.pollingPlace)}</td>
-      <td data-label="Barrio/compania">${escapeHtml(record.neighborhood)}</td>
       <td data-label="Mesa">${escapeHtml(record.tableNumber)}</td>
       <td data-label="Orden">${escapeHtml(record.orderNumber)}</td>
       <td data-label="Sexo">${escapeHtml(sexLabel(record.sex))}</td>

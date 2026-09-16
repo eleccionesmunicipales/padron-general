@@ -29,7 +29,6 @@ Columnas visibles
 - Apellidos
 - Cedula
 - Local de votacion
-- Barrio/compania
 - Mesa
 - Orden
 - Sexo
