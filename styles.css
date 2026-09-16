@@ -246,6 +246,9 @@ input, select {
 select option { background: #fff; color: #1b1111; }
 input::placeholder { color: #9a8b8b; }
 input:focus, select:focus { outline: 3px solid rgba(255,52,72,.22); border-color: var(--brand-2); }
+input[type="search"] {
+  font-size: 1rem;
+}
 
 .check-row { display: flex; align-items: center; gap: .55rem; align-self: end; color: var(--ink); }
 .check-row input { width: auto; transform: scale(1.25); }
@@ -447,14 +450,57 @@ td.actions { white-space: nowrap; }
 .conditional[hidden] { display: none; }
 
 @media (max-width: 760px) {
-  .campaign-logo { height: clamp(190px, 52vw, 300px); object-position: center 16%; }
+  main { padding: .8rem .7rem 1.4rem; }
+  .campaign-logo { height: clamp(150px, 45vw, 240px); object-position: center 16%; }
+  .panel { border-radius: 18px; padding: .85rem; margin-bottom: .8rem; }
+  .tools { grid-template-columns: 1fr; }
+  input[type="search"] { min-height: 3.1rem; font-size: 1.05rem; }
   .stats { margin-top: 1.2rem; }
   .dashboard-stats { grid-template-columns: 1fr; }
   .section-title { align-items: flex-start; flex-direction: column; }
+  .section-title h2 { font-size: 1.05rem; }
   .chart-layout { grid-template-columns: 1fr; justify-items: center; }
   .chart-legend { width: 100%; }
+  .table-wrap { overflow: visible; }
+  table, .table-panel.general table { min-width: 0; }
+  table, thead, tbody, tr, td { display: block; width: 100%; }
+  thead { display: none; }
+  tbody { display: grid; gap: .75rem; }
+  tbody tr {
+    padding: .85rem;
+    border: 1px solid rgba(80, 20, 20, .12);
+    border-radius: 18px;
+    background: #fff;
+    box-shadow: 0 12px 30px rgba(91, 18, 18, .09);
+  }
+  tbody tr:hover { transform: none; }
+  td {
+    display: grid;
+    grid-template-columns: 7.3rem 1fr;
+    gap: .65rem;
+    padding: .48rem 0;
+    border-bottom: 1px solid rgba(80, 20, 20, .09);
+    font-size: .95rem;
+  }
+  td:last-child { border-bottom: 0; }
+  td::before {
+    content: attr(data-label);
+    color: #7a1018;
+    font-size: .72rem;
+    font-weight: 900;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+  }
+  td:first-child,
+  td:nth-child(2) {
+    grid-template-columns: 1fr;
+    gap: .15rem;
+    font-size: 1.05rem;
+    font-weight: 900;
+  }
 }
 
 @media (max-width: 520px) {
-  .campaign-logo { height: 190px; object-position: center 14%; }
+  .campaign-logo { height: 145px; object-position: center 14%; }
+  td { grid-template-columns: 6.4rem 1fr; font-size: .9rem; }
 }

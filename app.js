@@ -173,15 +173,15 @@ function renderTable() {
   emptyState.hidden = filtered.length > 0;
   recordsBody.innerHTML = filtered.map((record) => `
     <tr>
-      <td>${escapeHtml(fixNameText(record.firstNames || record.fullName || ""))}</td>
-      <td>${escapeHtml(fixNameText(record.lastNames))}</td>
-      <td>${escapeHtml(record.documentNumber)}</td>
-      <td>${escapeHtml(record.pollingPlace)}</td>
-      <td>${escapeHtml(record.neighborhood)}</td>
-      <td>${escapeHtml(record.tableNumber)}</td>
-      <td>${escapeHtml(record.orderNumber)}</td>
-      <td>${escapeHtml(sexLabel(record.sex))}</td>
-      <td>${escapeHtml(formatDate(record.birthDate))}</td>
+      <td data-label="Nombres">${escapeHtml(fixNameText(record.firstNames || record.fullName || ""))}</td>
+      <td data-label="Apellidos">${escapeHtml(fixNameText(record.lastNames))}</td>
+      <td data-label="Cedula">${escapeHtml(record.documentNumber)}</td>
+      <td data-label="Local de votacion">${escapeHtml(record.pollingPlace)}</td>
+      <td data-label="Barrio/compania">${escapeHtml(record.neighborhood)}</td>
+      <td data-label="Mesa">${escapeHtml(record.tableNumber)}</td>
+      <td data-label="Orden">${escapeHtml(record.orderNumber)}</td>
+      <td data-label="Sexo">${escapeHtml(sexLabel(record.sex))}</td>
+      <td data-label="Fecha nac.">${escapeHtml(formatDate(record.birthDate))}</td>
     </tr>
   `).join("");
 }
