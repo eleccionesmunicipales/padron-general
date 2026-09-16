@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Padron General - Elecciones Municipales 2026</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header class="hero">
+      <img class="campaign-logo" src="logopincho.jpeg" alt="Logo Derlis Pincho Maidana Intendente">
+    </header>
+
+    <main id="appScreen">
+      <section class="panel tools-panel">
+        <div class="section-title">
+          <h2>Busqueda</h2>
+        </div>
+        <div class="tools">
+          <label>Buscar
+            <input id="search" type="search" placeholder="Nombres, apellidos, cedula, local...">
+          </label>
+        </div>
+      </section>
+
+      <section class="panel table-panel general">
+        <div class="section-title">
+          <h2>Padron general</h2>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Nombres</th>
+                <th>Apellidos</th>
+                <th>Cedula</th>
+                <th>Local de votacion</th>
+                <th>Barrio/compania</th>
+                <th>Mesa</th>
+                <th>Orden</th>
+                <th>Sexo</th>
+                <th>Fecha nac.</th>
+              </tr>
+            </thead>
+            <tbody id="recordsBody"></tbody>
+          </table>
+        </div>
+        <p id="emptyState" class="empty">Todavia no hay registros cargados.</p>
+      </section>
+    </main>
+
+    <script src="app.js?v=20260916-search-only"></script>
+  </body>
+</html>
